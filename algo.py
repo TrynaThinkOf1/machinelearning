@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 import joblib
 
 def process():
@@ -13,7 +13,7 @@ def process():
 
     y = df['LUNG_CANCER'].values
 
-    regressor = LogisticRegression()
+    regressor = LogisticRegression(max_iter=500)
     regressor.fit(X, y)
 
     joblib.dump(regressor, "lung_cancer_model.pkl")
