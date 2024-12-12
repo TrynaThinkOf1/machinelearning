@@ -1,16 +1,29 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import LabelEncoder
 
-df = pd.read_csv('soccer_data.csv')
+df = pd.read_csv('lung_cancer_data.csv', sep=',')
 
-X = df.iloc[:, 1:3].values
-y = df.iloc[:, 0].values
+le = LabelEncoder()
+df['LUNG_CANCER'] = le.fit_transform(df['LUNG_CANCER'])
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+X = df.iloc[:, :-1]
 
-regressor = LinearRegression()
-regressor.fit(X_train, y_train)
+y = df['LUNG_CANCER'].values
 
-if __name__ == "__main__":
-    print(regressor.predict([[64.2, 112]]))
+regressor = LogisticRegression()
+regressor.fit(X, y)
+
+def getPrediction(input_data):
+    input_df = pd.DataFrame([input_data])
+    input_df = input_df.reindex(columns=X.columns, fill_value=0)
+    probability = regressor.predict_proba(input_df)[0][1] * 100
+    return probability
+
+input_data = {'AGE': 15, 'SMOKING': 0, 'YELLOW_FINGERS': 0, 'ANXIETY': 0, 'CHRONIC_DISEASE': 0,
+              'FATIGUE': 0, 'ALLERGY': 0, 'ALCOHOL_CONSUMING': 0, 'COUGHING': 0,
+              'SHORTNESS_OF_BREATH': 0, 'SWALLOWING_DIFFICULTY': 0, 'CHEST_PAIN': 0,
+              'GENDER': 0}
+
+probability = getPrediction(input_data)
+print(f"The probability of lung cancer is: {probability}%")
