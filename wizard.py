@@ -5,7 +5,7 @@ CHEST_PAIN
 import pandas as pd
 import joblib
 
-regressor = joblib.load("lung_cancer_model.pkl")
+regressor = joblib.load("regressor_model.pkl")
 model_columns = joblib.load("model_columns.pkl")
 
 def getPrediction(input_data):
